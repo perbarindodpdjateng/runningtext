@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Running Text</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --accent: #f5c518;
+      --text-light: #f0ede8;
+      --speed: 30s;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      font-family: 'DM Sans', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      gap: 32px;
+    }
+
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.6rem, 4vw, 2.8rem);
+      letter-spacing: 0.12em;
+      color: var(--text-light);
+      opacity: 0.25;
+    }
+
+    /* ── Ticker wrapper ── */
+    .ticker-wrap {
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Top gradient fade */
+    .ticker-wrap::before,
+    .ticker-wrap::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 120px;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .ticker-wrap::before {
+      left: 0;
+      background: linear-gradient(to right, var(--bg), transparent);
+    }
+    .ticker-wrap::after {
+      right: 0;
+      background: linear-gradient(to left, var(--bg), transparent);
+    }
+
+    /* ── Variant 1 — yellow pill bar ── */
+    .ticker-1 {
+      background: var(--accent);
+      padding: 12px 0;
+    }
+    .ticker-1 .track {
+      display: flex;
+      width: max-content;
+      animation: scroll var(--speed) linear infinite;
+    }
+    .ticker-1 .item {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1rem, 2.5vw, 1.5rem);
+      letter-spacing: 0.08em;
+      color: #0a0a0a;
+      white-space: nowrap;
+      padding: 0 48px;
+    }
+    .ticker-1 .sep {
+      color: rgba(0,0,0,0.35);
+      font-size: 1.3em;
+      padding: 0 4px;
+      align-self: center;
+    }
+
+    /* ── Variant 2 — outlined / ghost ── */
+    .ticker-2 {
+      border-top: 1px solid rgba(245,197,24,0.3);
+      border-bottom: 1px solid rgba(245,197,24,0.3);
+      padding: 10px 0;
+    }
+    .ticker-2 .track {
+      display: flex;
+      width: max-content;
+      animation: scroll calc(var(--speed) * 1.4) linear infinite reverse;
+    }
+    .ticker-2 .item {
+      font-family: 'DM Sans', sans-serif;
+      font-size: clamp(0.8rem, 1.8vw, 1rem);
+      font-weight: 300;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(240,237,232,0.55);
+      white-space: nowrap;
+      padding: 0 40px;
+    }
+    .ticker-2 .dot {
+      color: var(--accent);
+      margin: 0 4px;
+    }
+
+    /* ── Variant 3 — big cinematic ── */
+    .ticker-3 {
+      padding: 6px 0;
+      background: transparent;
+    }
+    .ticker-3 .track {
+      display: flex;
+      width: max-content;
+      animation: scroll calc(var(--speed) * 0.7) linear infinite;
+    }
+    .ticker-3 .item {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 8vw, 6rem);
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+      padding: 0 40px;
+    }
+    .ticker-3 .item.outline {
+      -webkit-text-stroke: 1.5px rgba(240,237,232,0.18);
+      color: transparent;
+    }
+    .ticker-3 .item.fill {
+      color: rgba(240,237,232,0.08);
+    }
+    .ticker-3 .item.accent {
+      color: var(--accent);
+    }
+
+    /* Pause on hover */
+    .ticker-wrap:hover .track {
+      animation-play-state: paused;
+    }
+
+    /* ── Controls ── */
+    .controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    label {
+      color: rgba(240,237,232,0.5);
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    input[type=range] {
+      accent-color: var(--accent);
+      width: 140px;
+      vertical-align: middle;
+    }
+    .pill {
+      background: transparent;
+      border: 1px solid rgba(245,197,24,0.4);
+      color: var(--accent);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 6px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .pill:hover {
+      background: var(--accent);
+      color: #0a0a0a;
+    }
+
+    @keyframes scroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Running Text Component</h1>
+
+  <!-- Variant 1 -->
+  <div class="ticker-wrap ticker-1">
+    <div class="track" id="track1">
+      <!-- items injected by JS -->
+    </div>
+  </div>
+
+  <!-- Variant 2 -->
+  <div class="ticker-wrap ticker-2">
+    <div class="track" id="track2"></div>
+  </div>
+
+  <!-- Variant 3 -->
+  <div class="ticker-wrap ticker-3">
+    <div class="track" id="track3"></div>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <label>Kecepatan &nbsp;
+      <input type="range" id="speedSlider" min="5" max="80" value="30"/>
+    </label>
+    <button class="pill" id="toggleBtn">⏸ Pause</button>
+  </div>
+
+  <script>
+    // ── Data ──────────────────────────────────────────────
+    const items1 = [
+      "Selamat Datang", "⚡ Berita Terkini", "Teknologi & Inovasi",
+      "💡 Tips Hari Ini", "Jadwal Acara", "🔔 Pengumuman Penting"
+    ];
+    const items2 = [
+      "Informasi", "Terbaru", "Selalu", "Update", "Setiap", "Hari",
+      "Inovasi", "Tanpa", "Henti", "Bersama", "Kami"
+    ];
+    const items3 = ["BREAKING", "UPDATE", "LIVE", "NOW", "TERKINI"];
+
+    // ── Build tracks ──────────────────────────────────────
+    function buildTrack1(el, data) {
+      const chunk = data.map(t =>
+        `<span class="item">${t}<span class="sep">◆</span></span>`
+      ).join('');
+      el.innerHTML = chunk + chunk; // duplicate for seamless loop
+    }
+
+    function buildTrack2(el, data) {
+      const chunk = data.map(t =>
+        `<span class="item">${t}<span class="dot">●</span></span>`
+      ).join('');
+      el.innerHTML = chunk + chunk;
+    }
+
+    function buildTrack3(el, data) {
+      const classes = ['outline','fill','accent','outline','fill'];
+      const chunk = data.map((t, i) =>
+        `<span class="item ${classes[i % classes.length]}">${t}</span>`
+      ).join('');
+      el.innerHTML = chunk + chunk;
+    }
+
+    buildTrack1(document.getElementById('track1'), items1);
+    buildTrack2(document.getElementById('track2'), items2);
+    buildTrack3(document.getElementById('track3'), items3);
+
+    // ── Speed slider ──────────────────────────────────────
+    const slider = document.getElementById('speedSlider');
+    slider.addEventListener('input', () => {
+      const s = slider.value;
+      document.querySelectorAll('.ticker-1 .track').forEach(t =>
+        t.style.animationDuration = s + 's');
+      document.querySelectorAll('.ticker-2 .track').forEach(t =>
+        t.style.animationDuration = (s * 1.4) + 's');
+      document.querySelectorAll('.ticker-3 .track').forEach(t =>
+        t.style.animationDuration = (s * 0.7) + 's');
+    });
+
+    // ── Pause / Play button ───────────────────────────────
+    let paused = false;
+    const btn = document.getElementById('toggleBtn');
+    btn.addEventListener('click', () => {
+      paused = !paused;
+      document.querySelectorAll('.track').forEach(t =>
+        t.style.animationPlayState = paused ? 'paused' : 'running');
+      btn.textContent = paused ? '▶ Play' : '⏸ Pause';
+    });
+  </script>
+</body>
+</html>
