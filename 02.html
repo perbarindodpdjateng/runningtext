@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Running Text — Modern Tech</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg:    #08090a;
+  --bd:    rgba(255,255,255,0.08);
+  --text:  #f0efe8;
+  --muted: rgba(240,239,232,0.32);
+  --c1: #b8f5a0; --c1d: #1e3a15;
+  --c2: #a0d4f5; --c2d: #152a3a;
+  --c3: #f5c4a0; --c3d: #3a1e0e;
+  --rh: 76px;
+}
+
+html, body {
+  width: 100%; height: 100%;
+  background: var(--bg);
+  font-family: 'Syne', sans-serif;
+  color: var(--text);
+  overflow: hidden;
+}
+
+body::before {
+  content: ''; position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none; z-index: 0;
+}
+body::after {
+  content: ''; position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.03) 3px,rgba(0,0,0,0.03) 4px);
+  pointer-events: none; z-index: 200;
+}
+
+.shell {
+  position: relative; z-index: 1;
+  width: 100%; height: 100vh;
+  display: flex; flex-direction: column;
+}
+
+/* HEADER — mepet */
+.hd {
+  flex-shrink: 0;
+  padding: 5px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--bd);
+}
+.logo { display: flex; align-items: center; gap: 8px; }
+.logo-box {
+  width: 20px; height: 20px;
+  border: 1.5px solid var(--c1); border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.logo-box::before {
+  content: ''; width: 6px; height: 6px;
+  background: var(--c1); border-radius: 2px;
+}
+.logo-wrap { display: flex; flex-direction: column; gap: 1px; }
+.logo-name { font-size: 12px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; }
+.logo-sub  { font-family:'DM Mono',monospace; font-size:8px; color:var(--muted); letter-spacing:0.2em; text-transform:uppercase; }
+.hd-meta   { font-family:'DM Mono',monospace; font-size:8.5px; color:var(--muted); letter-spacing:0.12em; text-align:right; line-height:1.7; }
+
+/* BOARD — tengah, tidak ada padding tambahan */
+.board {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.trow {
+  position: relative; height: var(--rh);
+  display: flex; align-items: stretch;
+  border-top: 1px solid var(--bd); overflow: hidden;
+}
+.trow:last-child { border-bottom: 1px solid var(--bd); }
+
+.trow::before {
+  content: ''; position: absolute;
+  top: 0; left: 54px; right: 0; height: 1px;
+  opacity: 0.35; pointer-events: none; z-index: 2;
+}
+.r1::before { background: var(--c1); }
+.r2::before { background: var(--c2); }
+.r3::before { background: var(--c3); }
+
+.fl,.fr { position:absolute; top:0; bottom:0; width:90px; z-index:5; pointer-events:none; }
+.fl { left:54px;  background:linear-gradient(to right,var(--bg),transparent); }
+.fr { right:0;    background:linear-gradient(to left, var(--bg),transparent); }
+
+.tidx {
+  width: 54px; flex-shrink: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+  border-right: 1px solid var(--bd); background: var(--bg);
+  position: relative; z-index: 6;
+}
+.tnum { font-family:'DM Mono',monospace; font-size:8px; font-weight:500; letter-spacing:0.15em; color:var(--muted); }
+.tdot { width:5px; height:5px; border-radius:50%; }
+.r1 .tdot { background:var(--c1); }
+.r2 .tdot { background:var(--c2); }
+.r3 .tdot { background:var(--c3); }
+
+.ttrack { flex:1; overflow:hidden; display:flex; align-items:center; }
+.ttrack:hover .tinner { animation-play-state: paused; }
+
+.tinner { display:inline-flex; align-items:center; white-space:nowrap; }
+
+@keyframes goL { from{transform:translateX(0)}    to{transform:translateX(-50%)} }
+@keyframes goR { from{transform:translateX(-50%)} to{transform:translateX(0)}    }
+.s1 { animation: goL 46s linear infinite; }
+.s2 { animation: goR 30s linear infinite; }
+.s3 { animation: goL 20s linear infinite; }
+
+.titem {
+  display:inline-flex; align-items:center; gap:12px;
+  padding:0 1.8rem; height:var(--rh);
+  font-size:28px; font-weight:700; letter-spacing:-0.02em;
+  color:var(--text); text-decoration:none;
+  transition:color .15s; position:relative;
+}
+.titem::after {
+  content:''; position:absolute;
+  bottom:0; left:1.8rem; right:1.8rem; height:1.5px;
+  transform:scaleX(0); transform-origin:left; transition:transform .22s ease;
+}
+.r1 .titem:hover { color:var(--c1); } .r1 .titem::after { background:var(--c1); }
+.r2 .titem:hover { color:var(--c2); } .r2 .titem::after { background:var(--c2); }
+.r3 .titem:hover { color:var(--c3); } .r3 .titem::after { background:var(--c3); }
+.titem:hover::after { transform:scaleX(1); }
+
+.ttag {
+  font-family:'DM Mono',monospace; font-size:8px; font-weight:500;
+  letter-spacing:0.18em; text-transform:uppercase;
+  padding:3px 6px; border-radius:3px; flex-shrink:0; line-height:1;
+}
+.r1 .ttag { background:var(--c1d); color:var(--c1); }
+.r2 .ttag { background:var(--c2d); color:var(--c2); }
+.r3 .ttag { background:var(--c3d); color:var(--c3); }
+
+.tsep { display:inline-block; flex-shrink:0; width:4px; height:4px; border-radius:50%; opacity:.25; }
+.r1 .tsep { background:var(--c1); }
+.r2 .tsep { background:var(--c2); }
+.r3 .tsep { background:var(--c3); }
+
+/* FOOTER — mepet */
+.ft {
+  flex-shrink: 0;
+  padding: 5px 20px;
+  border-top: 1px solid var(--bd);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.ft-hint { display:flex; align-items:center; gap:8px; font-family:'DM Mono',monospace; font-size:8.5px; color:var(--muted); letter-spacing:.1em; }
+.ft-dot  { width:5px; height:5px; border-radius:50%; background:var(--muted); animation:blink 2s ease-in-out infinite; }
+.ft-live { display:flex; align-items:center; gap:6px; font-family:'DM Mono',monospace; font-size:8.5px; color:var(--c1); letter-spacing:.1em; }
+.ft-led  { width:6px; height:6px; border-radius:50%; background:var(--c1); animation:blink 1.4s ease-in-out infinite; }
+
+@keyframes blink { 0%,100%{opacity:.25} 50%{opacity:1} }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <header class="hd">
+    <div class="logo">
+      <div class="logo-box"></div>
+      <div class="logo-wrap">
+        <span class="logo-name">TechBoard</span>
+        <span class="logo-sub">Live Ticker System v2.0</span>
+      </div>
+    </div>
+    <div class="hd-meta">
+      <div id="clock">—</div>
+      <div>SYSTEM ONLINE</div>
+    </div>
+  </header>
+
+  <main class="board">
+
+    <div class="trow r1">
+      <div class="fl"></div><div class="fr"></div>
+      <div class="tidx"><span class="tnum">01</span><span class="tdot"></span></div>
+      <div class="ttrack"><div class="tinner s1" id="r1"></div></div>
+    </div>
+
+    <div class="trow r2">
+      <div class="fl"></div><div class="fr"></div>
+      <div class="tidx"><span class="tnum">02</span><span class="tdot"></span></div>
+      <div class="ttrack"><div class="tinner s2" id="r2"></div></div>
+    </div>
+
+    <div class="trow r3">
+      <div class="fl"></div><div class="fr"></div>
+      <div class="tidx"><span class="tnum">03</span><span class="tdot"></span></div>
+      <div class="ttrack"><div class="tinner s3" id="r3"></div></div>
+    </div>
+
+  </main>
+
+  <footer class="ft">
+    <div class="ft-hint"><span class="ft-dot"></span>HOVER untuk pause  ·  KLIK untuk buka tautan</div>
+    <div class="ft-live"><span class="ft-led"></span>LIVE FEED AKTIF</div>
+  </footer>
+
+</div>
+<script>
+const rows = [
+  { id:'r1', items:[
+    {text:'Kecerdasan Buatan',    tag:'AI',   url:'https://www.anthropic.com'},
+    {text:'Machine Learning',     tag:'ML',   url:'https://www.tensorflow.org'},
+    {text:'Neural Network',       tag:'NN',   url:'https://pytorch.org'},
+    {text:'Teknologi Masa Depan', tag:'TECH', url:'https://www.deepmind.com'},
+    {text:'Inovasi Digital',      tag:'DX',   url:'https://www.wired.com'},
+  ]},
+  { id:'r2', items:[
+    {text:'Cloud Computing',      tag:'CLD',  url:'https://aws.amazon.com'},
+    {text:'Big Data Analytics',   tag:'BDA',  url:'https://spark.apache.org'},
+    {text:'Quantum Processing',   tag:'QC',   url:'https://quantum.ibm.com'},
+    {text:'Edge Computing',       tag:'EC',   url:'https://www.intel.com'},
+    {text:'Blockchain Network',   tag:'BC',   url:'https://ethereum.org'},
+  ]},
+  { id:'r3', items:[
+    {text:'Robotik & Otomasi',    tag:'ROB',  url:'https://www.bostondynamics.com'},
+    {text:'Internet of Things',   tag:'IoT',  url:'https://iot.eclipse.org'},
+    {text:'Augmented Reality',    tag:'AR',   url:'https://arvr.google.com'},
+    {text:'Cyber Security',       tag:'SEC',  url:'https://owasp.org'},
+    {text:'5G Connectivity',      tag:'5G',   url:'https://www.gsma.com'},
+  ]},
+];
+
+rows.forEach(row => {
+  const el = document.getElementById(row.id);
+  [...row.items, ...row.items].forEach(item => {
+    const a = document.createElement('a');
+    a.href = item.url; a.className = 'titem';
+    a.target = '_blank'; a.rel = 'noopener noreferrer';
+    const b = document.createElement('span');
+    b.className = 'ttag'; b.textContent = item.tag;
+    a.appendChild(b);
+    a.appendChild(document.createTextNode(item.text));
+    el.appendChild(a);
+    const s = document.createElement('span');
+    s.className = 'tsep'; el.appendChild(s);
+  });
+});
+
+function tick() {
+  const n = new Date();
+  const t = n.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const d = n.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}).toUpperCase();
+  document.getElementById('clock').textContent = d + ' · ' + t;
+}
+tick(); setInterval(tick, 1000);
+</script>
+</body>
+</html>
